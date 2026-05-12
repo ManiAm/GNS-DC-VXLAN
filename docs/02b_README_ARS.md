@@ -339,7 +339,9 @@ The Type field enables two-way signaling: a **congestion detection** ARN trigger
 
 
 
-## The Remaining Blind Spot and Why Adaptive Routing Exists
+## Adaptive Routing and Centralized TE
+
+### The Oscillation Problem in Distributed AR
 
 Global Adaptive Routing with ARN is a major improvement over local AR: a congested switch can now signal upstream, allowing the ingress switch to reroute. However, the system is still **distributed**. Each switch independently decides how to react to the ARN signals it receives. No single entity has a complete, simultaneous view of every flow and every link in the fabric.
 
@@ -347,16 +349,39 @@ This creates a subtle but real limitation. Consider a scenario where TOR 1, TOR 
 
 > In distributed systems, this is a well-known challenge: **uncoordinated reactions to shared congestion signals can cause oscillation** — traffic bouncing between paths as multiple switches independently chase the least-congested link.
 
-[Centralized Traffic Engineering](./02a_README_LB.md#centralized-traffic-engineering-the-sdn-approach) such as MicroTE solves the oscillation problem by giving a central controller complete visibility into every flow and every link, enabling globally optimal flow placement. However, centralized TE operates on timescales of **seconds** — the controller must collect telemetry, compute routes, and push them back to the switches. For high-performance workloads like AI/ML training, where congestion must be resolved in **microseconds**, this latency is unacceptable. A microburst that saturates a link and triggers packet drops will have appeared and vanished long before the controller even receives the telemetry.
+### How Centralized TE Solves Oscillation
 
-| Dimension          | Distributed AR                                           | Centralized TE (MicroTE / SDN)                                 |
+[Centralized Traffic Engineering](./02a_README_LB.md#centralized-traffic-engineering-the-sdn-approach) such as MicroTE solves the oscillation problem by giving a central controller complete visibility into every flow and every link, enabling globally optimal flow placement. At this scale, centralized TE handles responsibilities that no distributed protocol can:
+
+- **Long-lived flow placement and path optimization** — the controller sees all elephant flows simultaneously and can assign each one to a distinct path, eliminating the oscillation that occurs when switches independently chase the same "best" link.
+
+- **Topology management and failure recovery** — the controller detects link and switch failures across the fabric and recomputes paths globally, rather than relying on each switch to independently reconverge.
+
+- **Capacity planning** — with a complete demand matrix, the controller can proactively balance load across the fabric before congestion occurs.
+
+- **Dynamic path recomputation** — the controller continuously re-evaluates and adjusts flow placement as traffic patterns shift over time (on timescales of seconds).
+
+All three major hyperscalers deploy centralized SDN controllers in their AI training fabrics:
+
+- **Google:** [Jupiter](http://static.googleusercontent.com/media/research.google.com/en//pubs/archive/43837.pdf) uses centralized SDN control managed by their [Orion](https://research.google/pubs/orion-googles-software-defined-networking-control-plane/) control platform, which handles 1.16 million network updates per second. Google recently introduced [Virgo](https://cloud.google.com/blog/products/networking/introducing-virgo-megascale-data-center-fabric), a megascale fabric specifically for AI training, built on Jupiter's proven SDN architecture.
+
+- **Meta:** Uses centralized traffic engineering in their [RoCE-based AI training clusters](https://engineering.fb.com/2024/08/05/data-center-engineering/roce-network-distributed-ai-training-at-scale/) (deployed since 2020), which "dynamically places traffic over all available paths in a load-balanced manner."
+
+- **Microsoft:** [SWAN](https://www.microsoft.com/en-us/research/blog/born-in-the-research-lab-a-decade-ago-swan-continues-to-accelerate-networking-in-the-microsoft-cloud/) (centralized SDN) is the foundation of Azure networking. Microsoft is now adding [SRv6-based packet steering](https://www.microsoft.com/en-us/research/publication/towards-fully-controllable-packet-steering-for-ai-backend-networks-with-srv6/) specifically for AI backend networks.
+
+### Why Adaptive Routing Is Still Needed
+
+Centralized TE operates on timescales of **seconds** — the controller must collect telemetry, compute routes, and push them back to the switches. For **real-time congestion response** (microbursts, transient link saturation), this reaction time is too slow. A microburst that saturates a link and triggers packet drops will have appeared and vanished long before the controller even receives the telemetry.
+
+This is precisely why adaptive routing exists as a **complementary** technology, not a competing one. The two systems operate on non-overlapping timescales:
+
+| Dimension          | Distributed AR                                           | Centralized TE (SDN)                                            |
 |:-------------------|:---------------------------------------------------------|:---------------------------------------------------------------|
 | **Reaction speed** | Microseconds (hardware data path)                        | Seconds (collect → compute → push)                              |
-| **Handles**        | Microbursts, transient congestion, link failures          | Long-lived elephant flow placement                              |
+| **Handles**        | Microbursts, transient congestion, link failures          | Long-lived elephant flow placement, topology management         |
 | **Visibility**     | Local + downstream ARN signals                            | Complete fabric-wide view                                       |
 | **Trade-off**      | Can oscillate under shared congestion                     | Too slow for transient events                                   |
-| **Deployed by**    | Nvidia Spectrum, Broadcom Tomahawk/Jericho, Marvell Teralynx | Google (Jupiter/B4), Microsoft (SWAN), Meta                   |
+| **ASIC vendors**   | Nvidia Spectrum, Broadcom Tomahawk/Jericho, Marvell Teralynx | —                                                            |
+| **Operators**      | —                                                         | Google (Jupiter/Virgo), Microsoft (SWAN), Meta                  |
 
-This is why adaptive routing exists as a complementary technology. Distributed AR (local and global) handles the **fast path** microsecond-scale reactions to transient congestion, microbursts, and link failures, entirely in ASIC hardware with no external dependencies. Centralized TE handles the **slow path** — optimal placement of long-lived elephant flows on longer timescales. The two systems operate on non-overlapping timescales and complement rather than conflict with each other.
-
-Modern hyperscale deployments increasingly combine both: distributed AR in the ASIC for real-time congestion response, and a centralized controller for global elephant flow optimization.
+Modern hyperscale AI fabrics combine both: distributed AR in the ASIC handles the **fast path** — microsecond-scale reactions to transient congestion entirely in hardware with no external dependencies. Centralized TE handles the **slow path** — globally optimal placement of long-lived flows. Together, they cover the full spectrum of timescales that a production fabric must respond to.
