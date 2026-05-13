@@ -128,7 +128,7 @@ This was the classic enterprise design, built in the early 2000s when most traff
 
     STP was designed to prevent this by logically disabling redundant links, leaving only a single, loop-free forwarding path active at any time. The blocked links sit idle as standby — they only activate if the primary link fails and STP reconverges (a process that could take 30 to 50 seconds in the original standard). The result is that you paid for two cables, but one sat completely idle. This effectively cut your available bandwidth in half while also introducing reconvergence delays during failures.
 
-- **No Fabric Load Balancing:** Because STP forces a single active path, there is no mechanism to spread traffic across parallel links. All traffic between two switches must traverse the single STP-elected forwarding path, regardless of how many physical links exist between them. Technologies like EtherChannel (link aggregation) could bundle multiple links into one logical pipe, but they only worked point-to-point between a pair of switches and did not solve the broader fabric-wide limitation imposed by STP's tree topology. For details on how modern networks handle this, see [Fabric Load Balancing](./02a_README_LB.md).
+- **No Fabric Load Balancing:** Because STP forces a single active path, there is no mechanism to spread traffic across parallel links. All traffic between two switches must traverse the single STP-elected forwarding path, regardless of how many physical links exist between them. Technologies like EtherChannel (link aggregation) could bundle multiple links into one logical pipe, but they only worked point-to-point between a pair of switches and did not solve the broader fabric-wide limitation imposed by STP's tree topology. For details on how modern networks handle this, see [Fabric Load Balancing](https://github.com/ManiAm/GNS-DC-Load-Balancing/blob/master/01_README_LB.md).
 
 
 ### The Modern Standard: Leaf-Spine (Clos Topology)
@@ -168,7 +168,7 @@ Traffic between servers in different pods traverses five stages: leaf → spine 
 
 - **Linear Scaling:** Need more bandwidth? Add another Spine switch. Need more servers? Add another Leaf switch. Need more pods? Add super-spines. You scale horizontally with commodity switches rather than buying massive, expensive chassis upgrades.
 
-- **All Links Active (ECMP instead of STP):** Unlike three-tier networks that relied on Layer 2 Spanning Tree Protocol (STP) to shut down redundant links, a Leaf-Spine fabric operates primarily at Layer 3 using [Equal-Cost Multi-Path (ECMP)](./02a_README_LB.md#ecmp-equal-cost-multi-pathing) routing.
+- **All Links Active (ECMP instead of STP):** Unlike three-tier networks that relied on Layer 2 Spanning Tree Protocol (STP) to shut down redundant links, a Leaf-Spine fabric operates primarily at Layer 3 using [Equal-Cost Multi-Path (ECMP)](https://github.com/ManiAm/GNS-DC-Load-Balancing/blob/master/01_README_LB.md#ecmp-equal-cost-multi-pathing) routing.
 
 By 2026, the industry has entirely moved past the three-tier model in the data center. The conversation is now focused on optimizing Leaf-Spine for extreme throughput:
 

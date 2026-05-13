@@ -186,7 +186,7 @@ An IP subnet is the Layer 3 equivalent of a broadcast domain. For a network to f
 
 ## Management VLAN
 
-We have established that true [Out-of-Band (OOB)](./01a_README_MGMT.md#in-band-vs-out-of-band-management) management requires a completely separate, physically isolated network infrastructure. While OOB is standard for core servers and routers, running a secondary network of physical cables to every single access switch in a building is often cost-prohibitive. Therefore, network administrators must frequently rely on In-Band management (using the primary production network) to access their switches. To prevent regular users from accessing or interfering with these critical management interfaces, administrators utilize a Management VLAN.
+We have established that true [Out-of-Band (OOB)](./02_README_MGMT.md#in-band-vs-out-of-band-management) management requires a completely separate, physically isolated network infrastructure. While OOB is standard for core servers and routers, running a secondary network of physical cables to every single access switch in a building is often cost-prohibitive. Therefore, network administrators must frequently rely on In-Band management (using the primary production network) to access their switches. To prevent regular users from accessing or interfering with these critical management interfaces, administrators utilize a Management VLAN.
 
 A Management VLAN is a dedicated, logically isolated VLAN used exclusively to carry administrative traffic (such as SSH, SNMP, Syslog, and HTTPS) to and from network infrastructure devices.
 
@@ -303,9 +303,9 @@ To overcome the scaling, bandwidth, and geographic limitations of traditional 80
 
 ### Leaf-Spine Architecture (The Physical Underlay)
 
-The solution begins by discarding the traditional three-tier (Core, Distribution, Access) topology in favor of a Leaf-Spine (Clos) architecture. In this design, every Leaf switch connects to every Spine switch. Because the connections between the Spine and Leaf layers are strictly routed Layer 3 links, Spanning Tree Protocol is completely eliminated from the core fabric. Instead, all links are active simultaneously using [Equal-Cost Multi-Path (ECMP)](./02a_README_LB.md#ecmp-equal-cost-multi-pathing) routing, providing massive, predictable bandwidth and deterministic latency.
+The solution begins by discarding the traditional three-tier (Core, Distribution, Access) topology in favor of a Leaf-Spine (Clos) architecture. In this design, every Leaf switch connects to every Spine switch. Because the connections between the Spine and Leaf layers are strictly routed Layer 3 links, Spanning Tree Protocol is completely eliminated from the core fabric. Instead, all links are active simultaneously using [Equal-Cost Multi-Path (ECMP)](https://github.com/ManiAm/GNS-DC-Load-Balancing/blob/master/01_README_LB.md#ecmp-equal-cost-multi-pathing) routing, providing massive, predictable bandwidth and deterministic latency.
 
-> Refer to [Topology Guide](./02_README_TOPOLOGY.md#the-modern-standard-leaf-spine-clos-topology) for full details.
+> Refer to [Topology Guide](./03_README_TOPOLOGY.md#the-modern-standard-leaf-spine-clos-topology) for full details.
 
 ### Network Virtualization with VXLAN (The Data Plane Overlay)
 

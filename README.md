@@ -25,10 +25,8 @@ This lab mirrors production data center deployments:
 Because data center networking spans many interdependent technologies, this project includes a structured set of guides designed to build knowledge progressively. The following documents introduce the underlying concepts step by step, beginning with physical infrastructure and how it is operated, then topology and overlays through hands-on lab configuration.
 
 - **[Data Center](docs/01_README_DC.md):** Physical infrastructure fundamentals — facility design, rack units, power and cooling, and cabling.
-- **[Infrastructure Management](docs/01a_README_MGMT.md):** In-band vs. out-of-band management — how administrators monitor, configure, and maintain data center hardware.
-- **[Network Topology](docs/02_README_TOPOLOGY.md):** Physical and logical topology — rack-level wiring models, the evolution from Three-Tier to Leaf-Spine (Clos), and how traffic flows through a modern fabric.
-- **[Fabric Load Balancing](docs/02a_README_LB.md):** How ECMP distributes traffic across equal-cost paths — hash tuples, the elephant flow problem, hash polarization, and resilient hashing.
-- **[Adaptive Routing](docs/02b_README_ARS.md):** Dynamic, congestion-aware load balancing beyond static ECMP — flowlet switching, packet spraying, and global adaptive routing with ARN.
+- **[Infrastructure Management](docs/02_README_MGMT.md):** In-band vs. out-of-band management — how administrators monitor, configure, and maintain data center hardware.
+- **[Network Topology](docs/03_README_TOPOLOGY.md):** Physical and logical topology — rack-level wiring models, the evolution from Three-Tier to Leaf-Spine (Clos), and how traffic flows through a modern fabric.
 - **[VLANs](docs/04_vlan.md):** Virtual Local Area Networks — collision and broadcast domains, Layer 2 segmentation, and the scaling challenges that motivate overlay networks.
 - **[VXLAN](docs/05_vxlan.md):** Virtual Extensible LAN — the overlay/underlay model, VXLAN encapsulation, VTEPs, and how Layer 2 traffic is tunneled over a Layer 3 fabric.
 - **[BGP EVPN](docs/06_evpn.md):** Ethernet VPN control plane — how BGP distributes Layer 2 and Layer 3 reachability information to automate VXLAN tunnel discovery and MAC/IP learning.
