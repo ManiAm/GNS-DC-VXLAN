@@ -4,7 +4,7 @@ BGP EVPN (Ethernet Virtual Private Network) is a standards-based control plane t
 
 This document explains EVPN step by step. Since EVPN depends on BGP and VXLAN concepts, those prerequisites are explained first.
 
-**Prerequisites:** This document assumes familiarity with VLANs (04_vlan.md) and VXLAN (05_vxlan.md).
+**Prerequisites:** This document assumes familiarity with VLANs (01_vlan.md) and VXLAN (02_vxlan.md).
 
 ---
 
@@ -342,4 +342,4 @@ Putting it all together in a typical deployment:
 
 **EVPN is the brain of the VXLAN fabric.** VXLAN provides the data-plane tunnel; EVPN tells VTEPs where to send traffic.
 
-For hands-on configuration using SONiC, see the companion lab document (07_lab.md).
+For hands-on configuration using SONiC, see the lab section in the main project README.

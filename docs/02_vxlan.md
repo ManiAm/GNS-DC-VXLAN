@@ -180,7 +180,7 @@ Because the underlay routers see these as standard, one-to-one IP packets, they 
 
 ## Hosts in different VNIs require Layer 3 routing
 
-Just like traditional VLANs, VNIs provide strict isolation. A host sitting in VNI 1000 cannot natively talk to a host in VNI 2000, even if they are physically plugged into the exact same ToR switch. They exist in parallel virtual universes. To allow communication between different VNIs, the traffic must be routed at Layer 3. This is analogous to [Inter-VLAN routing](./04_vlan.md#inter-vlan-communication) in legacy networks. Here is how the flow works when a server in VNI 1000 wants to talk to a server in VNI 2000:
+Just like traditional VLANs, VNIs provide strict isolation. A host sitting in VNI 1000 cannot natively talk to a host in VNI 2000, even if they are physically plugged into the exact same ToR switch. They exist in parallel virtual universes. To allow communication between different VNIs, the traffic must be routed at Layer 3. This is analogous to [Inter-VLAN routing](./01_vlan.md#inter-vlan-communication) in legacy networks. Here is how the flow works when a server in VNI 1000 wants to talk to a server in VNI 2000:
 
 - **Decapsulation**: The packet arrives at a routing gateway (this can be the local VTEP acting as a router, a core switch, or a firewall). The gateway strips off the VXLAN header for VNI 1000.
 

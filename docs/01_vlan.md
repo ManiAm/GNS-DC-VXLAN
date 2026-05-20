@@ -186,7 +186,7 @@ An IP subnet is the Layer 3 equivalent of a broadcast domain. For a network to f
 
 ## Management VLAN
 
-We have established that true [Out-of-Band (OOB)](./02_README_MGMT.md#in-band-vs-out-of-band-management) management requires a completely separate, physically isolated network infrastructure. While OOB is standard for core servers and routers, running a secondary network of physical cables to every single access switch in a building is often cost-prohibitive. Therefore, network administrators must frequently rely on In-Band management (using the primary production network) to access their switches. To prevent regular users from accessing or interfering with these critical management interfaces, administrators utilize a Management VLAN.
+We have established that true [Out-of-Band (OOB)](https://github.com/ManiAm/DC-Fundamentals/blob/master/docs/02_README_MGMT.md#in-band-vs-out-of-band-management) management requires a completely separate, physically isolated network infrastructure. While OOB is standard for core servers and routers, running a secondary network of physical cables to every single access switch in a building is often cost-prohibitive. Therefore, network administrators must frequently rely on In-Band management (using the primary production network) to access their switches. To prevent regular users from accessing or interfering with these critical management interfaces, administrators utilize a Management VLAN.
 
 A Management VLAN is a dedicated, logically isolated VLAN used exclusively to carry administrative traffic (such as SSH, SNMP, Syslog, and HTTPS) to and from network infrastructure devices.
 
@@ -305,16 +305,16 @@ To overcome the scaling, bandwidth, and geographic limitations of traditional 80
 
 The solution begins by discarding the traditional three-tier (Core, Distribution, Access) topology in favor of a Leaf-Spine (Clos) architecture. In this design, every Leaf switch connects to every Spine switch. Because the connections between the Spine and Leaf layers are strictly routed Layer 3 links, Spanning Tree Protocol is completely eliminated from the core fabric. Instead, all links are active simultaneously using [Equal-Cost Multi-Path (ECMP)](https://github.com/ManiAm/GNS-DC-Load-Balancing/blob/master/01_README_LB.md#ecmp-equal-cost-multi-pathing) routing, providing massive, predictable bandwidth and deterministic latency.
 
-> Refer to [Topology Guide](./03_README_TOPOLOGY.md#the-modern-standard-leaf-spine-clos-topology) for full details.
+> Refer to [Topology Guide](https://github.com/ManiAm/DC-Fundamentals/blob/master/docs/03_README_TOPOLOGY.md#the-modern-standard-leaf-spine-clos-topology) for full details.
 
 ### Network Virtualization with VXLAN (The Data Plane Overlay)
 
 VXLAN (Virtual Extensible LAN) modernizes data center networking by functioning as a virtualized Layer 2 overlay that rides on top of a robust Layer 3 routed underlay. It works by encapsulating standard Layer 2 Ethernet frames inside UDP/IP packets, effectively hiding the original MAC-based traffic from the physical routing hardware. This encapsulation solves two critical bottlenecks of legacy networks: it utilizes a 24-bit VXLAN Network Identifier (VNI) to exponentially increase the maximum number of isolated network segments from 4,094 to over 16 million, and it allows these logical Layer 2 segments to be routed across standard IP networks, enabling engineers to stretch identical subnets across different physical racks or entirely separate data centers without relying on continuous, physical Layer 2 trunk links.
 
-> Refer to [VXLAN Guide](./05_vxlan.md) for full details.
+> Refer to [VXLAN Guide](./02_vxlan.md) for full details.
 
 ### BGP EVPN (The Control Plane)
 
 Traditional VLANs rely on "flood-and-learn" mechanics to figure out where MAC addresses live, which wastes CPU and bandwidth. Ethernet VPN (EVPN) using the Border Gateway Protocol (BGP) acts as the intelligent control plane for VXLAN. Instead of flooding the network to find devices, switches use BGP to proactively advertise and share MAC and IP reachability information with each other. This enables highly advanced features like Distributed Anycast Gateways, where the default gateway IP address exists on every Top-of-Rack leaf switch simultaneously, routing traffic locally and instantly at the edge of the network.
 
-> Refer to [EVPN Guide](./06_evpn.md) for full details.
+> Refer to [EVPN Guide](./03_evpn.md) for full details.
